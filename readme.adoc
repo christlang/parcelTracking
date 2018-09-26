@@ -1,0 +1,7 @@
+
+Project to discover different ways for a node-server application.
+
+==Problem domain==
+
+An organisation wants to support different stations with parcels from 
+a main station.
