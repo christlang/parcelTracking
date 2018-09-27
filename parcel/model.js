@@ -72,5 +72,13 @@ module.exports = {
             }
             return order;
         });
+    },
+    unarchive(id) {
+        data = data.map(order => {
+            if (order.id === id) {
+                order.itemProcessed = false;
+            }
+            return order;
+        });
     }
 };

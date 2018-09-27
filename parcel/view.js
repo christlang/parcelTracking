@@ -10,7 +10,13 @@ function renderBoolean(value) {
 }
 
 function renderArchive(parcel) {
-    const link = `<a href="parcel/archive/${parcel.id}">` +
+    let action;
+    if (parcel.itemProcessed) {
+        action = 'unarchive'
+    } else {
+        action = 'archive'
+    }
+    const link = `<a href="parcel/${action}/${parcel.id}">` +
         `${renderBoolean(parcel.itemProcessed)}</a>`;
 
     return link;

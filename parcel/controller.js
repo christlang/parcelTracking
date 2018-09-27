@@ -13,9 +13,16 @@ function archiveAction(request, response) {
     response.redirect(request.baseUrl);
 }
 
+function unarchiveAction(request, response) {
+    const id = parseInt(request.params.id, 10);
+    model.unarchive(id);
+    response.redirect(request.baseUrl);
+}
+
 
 
 module.exports = {
     listAction,
-    archiveAction
+    archiveAction,
+    unarchiveAction
 };
