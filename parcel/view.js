@@ -34,6 +34,7 @@ function renderParcelTable(parcels) {
     <th>Arrived</th>
     <th>Comment</th>
     <th>Processed</th>
+    <th></th>
 </tr>
 </thead>
 <tbody>
@@ -55,6 +56,7 @@ function renderParcelTable(parcels) {
         <td>${renderBoolean(p.arrivedAtDestination)}</td>
         <td>${p.comment}</td>
         <td>${renderArchive(p)}</td>
+        <td><a href="/parcel/form/${p.id}">edit</a></td>
     </tr>`).join('')}
 </tbody>
 </table>`;
@@ -71,7 +73,7 @@ module.exports = function render(parcels) {
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>current open orders</h1>
+    <h1>current open orders (<a href="/parcel/form">create new</a>)</h1>
     ${renderParcelTable(parcels.filter(p => !p.itemProcessed))}
     <h1>archive</h1>
     ${renderParcelTable(parcels.filter(p => p.itemProcessed))}

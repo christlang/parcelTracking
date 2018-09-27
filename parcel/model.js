@@ -3,9 +3,9 @@ let data = [
         order: 'carburettor',
         destination: 'Mbagathi',
         receiver: 'Werkstat',
-        orderDate: '2.8.2018',
+        orderDate: '2018-08-02',
         itemInHaiger: true,
-        sentFromHaigerDate: '3.8.2018',
+        sentFromHaigerDate: '2018-08-03',
         sentFromHaigerWith: 'Frank',
         arrivedAtDestination: true,
         comment: '',
@@ -15,9 +15,9 @@ let data = [
         order: 'transistor',
         destination: 'Mbagathi',
         receiver: 'Benjamin',
-        orderDate: '2.8.2018',
+        orderDate: '2018-08-02',
         itemInHaiger: true,
-        sentFromHaigerDate: '24.9.2018',
+        sentFromHaigerDate: '2018-09-24',
         sentFromHaigerWith: 'Axel',
         arrivedAtDestination: true,
         comment: '',
@@ -27,7 +27,7 @@ let data = [
         order: 'Raspberry Pi',
         destination: 'Arua',
         receiver: 'Martin',
-        orderDate: '2.8.2018',
+        orderDate: '2018-08-02',
         itemInHaiger: false,
         sentFromHaigerDate: '',
         sentFromHaigerWith: '',
@@ -39,7 +39,7 @@ let data = [
         order: 'WLAN-Antenna',
         destination: 'Aru',
         receiver: 'Hans',
-        orderDate: '2.8.2018',
+        orderDate: '2018-08-02',
         itemInHaiger: false,
         sentFromHaigerDate: '',
         sentFromHaigerWith: '',
@@ -51,15 +51,30 @@ let data = [
         order: 'turbine blade',
         destination: 'Tinderet',
         receiver: 'Siggi',
-        orderDate: '2.8.2018',
+        orderDate: '2018-08-02',
         itemInHaiger: true,
-        sentFromHaigerDate: '9.8.2018',
+        sentFromHaigerDate: '2018-08-09',
         sentFromHaigerWith: 'Uwe',
-        arrivedAtDestination: '15.8.2018',
+        arrivedAtDestination: '2018-08-15',
         comment: 'every thing okay',
         itemProcessed: true
     }
 ];
+
+function getNextId() {
+    return Math.max(...data.map(parcel => parcel.id)) + 1;
+}
+
+function insert(parcel) {
+    parcel.id = getNextId();
+    data.push(parcel);
+}
+
+function update(parcel) {
+    parcel.id = parseInt(parcel.id, 10);
+    const index = data.findIndex(item => item.id === parcel.id);
+    data[index] = parcel;
+}
 
 module.exports = {
     getAll() {
@@ -80,5 +95,11 @@ module.exports = {
             }
             return order;
         });
+    },
+    get(id) {
+        return data.find(parcel => parcel.id === id);
+    },
+    save(parcel) {
+        parcel.id === '' ? insert(parcel) : update(parcel);
     }
 };
