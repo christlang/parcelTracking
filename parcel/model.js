@@ -1,4 +1,4 @@
-const data = [
+let data = [
     { id: 1,
         order: 'carburettor',
         destination: 'Mbagathi',
@@ -64,5 +64,13 @@ const data = [
 module.exports = {
     getAll() {
         return data;
+    },
+    archive(id) {
+        data = data.map(order => {
+            if (order.id === id) {
+                order.itemProcessed = true;
+            }
+            return order;
+        });
     }
 };

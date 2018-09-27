@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const { listAction } = require('./controller');
+const { listAction, archiveAction } = require('./controller');
 
 router.get('/', listAction);
+router.get('/archive/:id', archiveAction);
 
 module.exports = router;
