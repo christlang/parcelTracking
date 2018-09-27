@@ -1,0 +1,37 @@
+extends ../../templates/base
+
+block content
+    form(action="/parcel/save" method="post")
+        input(type="hidden" id="id" name="id" value=parcel.id)
+        div
+            label(for="order") Order:
+            input(type="text" id="order" name="order" value=parcel.order)
+        div
+            label(for="destination") Destination:
+            input(type="text" id="destination" name="destination" value=parcel.destination)
+        div
+            label(for="receiver") Receiver:
+            input(type="text" id="receiver" name="receiver" value=parcel.receiver)
+        div
+            label(for="orderDate") Order date:
+            input(type="date" id="orderDate" name="orderDate" value=parcel.orderDate)
+        div
+            label(for="itemInHaiger") Item in Haiger:
+            input(type="checkbox" id="itemInHaiger" name="itemInHaiger" checked=parcel.itemInHaiger && 'checked')
+        div
+            label(for="sentFromHaigerDate") Sent from Haiger (date):
+            input(type="date" id="sentFromHaigerDate" name="sentFromHaigerDate" value=parcel.sentFromHaigerDate)
+        div
+            label(for="sentFromHaigerWith") Sent from Haiger (with):
+            input(type="text" id="sentFromHaigerWith" name="sentFromHaigerWith" value=parcel.sentFromHaigerWith)
+        div
+            label(for="arrivedAtDestination") Arrived at destination:
+            input(type="date" id="arrivedAtDestination" name="arrivedAtDestination" value=parcel.arrivedAtDestination)
+        div
+            label(for="comment") Comment:
+            input(type="text" id="comment" name="comment" value=parcel.comment)
+        div
+            label(for="itemProcessed") Item processed:
+            input(type="checkbox" id="itemProcessed" name="itemProcessed" checked=parcel.itemProcessed && 'checked')
+        div
+            button(type="submit") save

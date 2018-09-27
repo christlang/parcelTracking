@@ -1,0 +1,38 @@
+extends ../../templates/base
+include ./list-item
+
+block content
+    h1 current open orders (<a href="/parcel/form">new</a>)
+    table
+        thead
+            tr
+                th Id
+                th Order
+                th Destination
+                th Arrived in Haiger
+                th Sent from Haiger
+                th Arrived
+                th Comment
+                th Processed
+                th
+        tbody
+            -for(let parcel of parcelsOpen)
+                +listItem(parcel)
+    h1 archieve
+    table
+        thead
+            tr
+                th Id
+                th Order
+                th Destination
+                th Arrived in Haiger
+                th Sent from Haiger
+                th Arrived
+                th Comment
+                th Processed
+                th
+        tbody
+            -for(let parcel of parcelsArchive)
+                +listItem(parcel)
+
+

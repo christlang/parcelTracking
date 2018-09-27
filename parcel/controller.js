@@ -1,11 +1,35 @@
 const model = require('./model');
-const view = require('./view');
-const form = require('./form');
+
+function prepareParcelForList(parcel) {
+    if (parcel.itemProcessed) {
+        parcel.itemProcessedAction = 'unarchive';
+        parcel.itemProcessedIcon = '/yes.png';
+    } else {
+        parcel.itemProcessedAction = 'archive';
+        parcel.itemProcessedIcon = '/no.png';
+    }
+
+    if (parcel.itemInHaiger) {
+        parcel.itemInHaigerIcon = '/yes.png';
+    } else {
+        parcel.itemInHaigerIcon = '/no.png';
+    }
+
+    if (parcel.arrivedAtDestination) {
+        parcel.arrivedAtDestinationIcon = '/yes.png';
+    } else {
+        parcel.arrivedAtDestinationIcon = '/no.png';
+    }
+}
 
 function listAction(request, response) {
     const parcels = model.getAll();
-    const body = view(parcels);
-    response.send(body);
+
+    parcels.forEach(prepareParcelForList);
+
+    const parcelsOpen = parcels.filter(parcel => !parcel.itemProcessed);
+    const parcelsArchive = parcels.filter(parcel => parcel.itemProcessed);
+    response.render(__dirname + '/views/list', { parcelsOpen, parcelsArchive });
 }
 
 function archiveAction(request, response) {
@@ -39,8 +63,7 @@ function formAction(request, response) {
         parcel = model.get(id);
     }
 
-    const body = form(parcel);
-    response.send(body);
+    response.render(__dirname + '/views/form', { parcel });
 }
 
 function saveAction(request, response) {
