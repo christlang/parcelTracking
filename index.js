@@ -1,9 +1,12 @@
 const express = require('express');
+const morgan = require('morgan');
 const parcelRouter = require('./parcel');
 
 const app = express();
 
 app.get('/', (request, response) => response.redirect('/parcel'));
+
+app.use(morgan('common', { immediate: true }));
 
 app.use('/parcel', parcelRouter);
 
