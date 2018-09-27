@@ -8,4 +8,15 @@ a main station.
 
 == Start ==
 
-* ```node index.js```
+Steps to start the app.
+
+----
+nvm use 8
+npm install
+node index.js
+----
+
+
+== help ==
+
+* Express-Middleware - http://expressjs.com/en/resources/middleware.html
