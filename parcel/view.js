@@ -1,10 +1,22 @@
+function renderBoolean(value) {
+    let pic;
+    if (value) {
+        pic = 'yes.png';
+    } else {
+        pic = 'no.png';
+    }
+
+    return `<img src="${pic}" />`
+}
+
 module.exports = function render(parcels) {
     return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Movie list</title>
+    <title>Parcel list</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <table>
@@ -15,7 +27,6 @@ module.exports = function render(parcels) {
             <th>Destination</th>
             <th>Arrived in Haiger</th>
             <th>Sent from Haiger</th>
-            <th>Sent with</th>
             <th>Arrived</th>
             <th>Comment</th>
             <th>Processed</th>
@@ -32,12 +43,14 @@ module.exports = function render(parcels) {
         <li>Ordered: ${p.orderDate}</li>
     </ul></td>
     <td>${p.destination}</td>
-    <td>${p.itemInHaiger}</td>
-    <td>${p.sentFromHaigerDate}</td>
-    <td>${p.sentFromHaigerWith}</td>
-    <td>${p.arrivedAtDestination}</td>
+    <td>${renderBoolean(p.itemInHaiger)}</td>
+    <td><ul>
+        <li>With: ${p.sentFromHaigerWith}</li>
+        <li>Date: ${p.sentFromHaigerDate}</li>
+    </ul></td>
+    <td>${renderBoolean(p.arrivedAtDestination)}</td>
     <td>${p.comment}</td>
-    <td>${p.itemProcessed}</td>
+    <td>${renderBoolean(p.itemProcessed)}</td>
 </tr>`)
         .join('')}
         </tbody>

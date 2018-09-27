@@ -4,6 +4,8 @@ const parcelRouter = require('./parcel');
 
 const app = express();
 
+app.use(express.static(__dirname + '/public'));
+
 app.get('/', (request, response) => response.redirect('/parcel'));
 
 app.use(morgan('common', { immediate: true }));
