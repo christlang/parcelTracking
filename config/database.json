@@ -1,0 +1,10 @@
+{
+  "dev": {
+    "driver": "sqlite3",
+    "filename": "./parcel-dev.db"
+  },
+  "prod": {
+    "driver": "sqlite3",
+    "filename": "./parcel.db"
+  }
+}

@@ -1,5 +1,8 @@
+:toc:
 
 Project to discover different ways for a node-server application.
+
+
 
 == Problem domain ==
 
@@ -19,4 +22,28 @@ node index.js
 
 == help ==
 
-* Express-Middleware - http://expressjs.com/en/resources/middleware.html
+=== Express-Middleware ===
+
+* http://expressjs.com/en/resources/middleware.html
+
+=== db-migrate ===
+
+* https://kostasbariotis.com/data-migration-with-nodejs/
+* https://db-migrate.readthedocs.io/en/latest/
+
+[source,bash]
+----
+# options
+# --env
+# --env dev  -> development db (default)
+# --env prod -> productive db
+
+npx db-migrate                # show help
+npx db-migrate db:create test # create db (in dev)
+npx db-migrate create $description-without-space
+npx db-migrate create create-table-movies # create new script
+npx db-migrate up        # migrate
+npx db-migrate down      # rollback
+npx db-migrate down -c 1 # rollback last change only
+npx db-migrate down $file-name # rollback special file
+----
