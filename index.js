@@ -4,6 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const {ensureLoggedIn } = require('connect-ensure-login');
+const responseTime = require('response-time')
 const parcelRouter = require('./parcel');
 const auth = require('./auth');
 
@@ -16,6 +17,15 @@ app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(responseTime((request, response, time) => {
+    if (request.user) {
+        console.log(`response-time: ${request.user.username}, ${request.url}, ${time}`);
+    } else {
+        console.log(`response-time: undefined, ${request.url}, ${time}`);
+    }
+
+}));
 
 auth(app);
 
