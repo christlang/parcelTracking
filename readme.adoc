@@ -81,3 +81,20 @@ cd ..
 === Config ===
 
 A config example you can find under ```config/server-example.json``` you can copy this to ```config/server.json``` and adjust the values to your need. All possible configs should be shown in the example.
+
+
+=== docker ===
+
+[source,bash]
+----
+docker build -t cutl/parcel-tracking .
+docker run -p 8080:8080 -v $(pwd)/parcel.db:/usr/src/app/parcel.db -d cutl/parcel-tracking
+docker run -p 8080:8080 -v $(pwd)/parcel.db:/usr/src/app/parcel.db -it cutl/parcel-tracking bash
+
+# free space
+docker images -a
+docker rmi cutl/parcel-tracking -f
+docker images purge
+# remove every image
+docker system prune -a
+----

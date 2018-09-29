@@ -4,8 +4,10 @@ function getConfig() {
     const defaultConfig = './config/server.json';
     const fallbackConfig = './config/server-example.json';
 
+    let config;
+
     if (fs.existsSync(defaultConfig)) {
-        return require(defaultConfig);
+        config = require(defaultConfig);
     } else if (fs.existsSync(fallbackConfig)) {
         console.log('');
         console.log(`You are using the fallback config: ${fallbackConfig}`);
@@ -13,13 +15,20 @@ function getConfig() {
         console.log(`please provide a usual config (copy the example)`);
         console.log('');
 
-        return require(fallbackConfig);
+        config = require(fallbackConfig);
     } else {
         console.log('');
         console.log('can not find a config, giving up start');
         console.log('');
         process.exit(1);
     }
+
+    if (!fs.existsSync(config.database)) {
+        console.log(`database-file does not exists: ${config.database}`);
+        process.exit(2);
+    }
+
+    return config;
 }
 
 
