@@ -51,10 +51,11 @@ function convertTimestampToDate(timestamp) {
 }
 
 function listAction(request, response) {
+    const orderBy = request.params.orderBy || 'id';
 
     Promise.all([
-        model.getAllOpen().then(prepareParcelForList),
-        model.getAllArchived().then(prepareParcelForList)
+        model.getAllOpen(orderBy).then(prepareParcelForList),
+        model.getAllArchived(orderBy).then(prepareParcelForList)
     ]).then(([parcelsOpen, parcelsArchive]) => {
             response.render(__dirname + '/views/list', {
                 parcelsOpen, parcelsArchive });

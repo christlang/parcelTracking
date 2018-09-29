@@ -7,7 +7,7 @@ const {
     saveAction
 } = require('./controller');
 
-router.get('/', listAction);
+router.get('/:orderBy?', listAction);
 router.get('/archive/:id', archiveAction);
 router.get('/unarchive/:id', unarchiveAction);
 router.get('/form/:id?', formAction);

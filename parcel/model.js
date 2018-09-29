@@ -3,10 +3,12 @@ const sqlite = require('sqlite3');
 const config = require('../config').getConfig();
 const db = new sqlite.Database(config.database);
 
-function getAll() {
+function getAll(orderBy) {
+    const orderCriteria = getCheckedCreteria(orderBy);
+
     return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM Parcels';
-        db.all(query, (error, results) => {
+        const query = `SELECT * FROM Parcels ORDER BY ${orderCriteria}`;
+        db.all(query, [orderCriteria], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -16,10 +18,26 @@ function getAll() {
     });
 }
 
-function getAllArchived() {
+/**
+ * The return-value will be used directly in a sql-query. So make sure
+ * is not dangerous. Uses a whitelist of allowed values.
+ *
+ * @param orderBy
+ * @return {*}
+ */
+function getCheckedCreteria(orderBy) {
+    if (['id', 'destination', 'arrivedAtDestination'].includes(orderBy)) {
+        return orderBy;
+    }
+    return 'id';
+}
+
+function getAllArchivedOrNot(processed, orderBy) {
+    const orderCriteria = getCheckedCreteria(orderBy);
+
     return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM Parcels WHERE itemProcessed = 1';
-        db.all(query, (error, results) => {
+        const query = `SELECT * FROM Parcels WHERE itemProcessed = ? ORDER BY ${orderCriteria}`;
+        db.all(query, [processed], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -29,17 +47,12 @@ function getAllArchived() {
     });
 }
 
-function getAllOpen() {
-    return new Promise((resolve, reject) => {
-        const query = 'SELECT * FROM Parcels WHERE itemProcessed = 0';
-        db.all(query, (error, results) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(results);
-            }
-        });
-    });
+function getAllArchived(orderBy) {
+    return getAllArchivedOrNot(1, orderBy);
+}
+
+function getAllOpen(orderBy) {
+    return getAllArchivedOrNot(0, orderBy);
 }
 
 function insert(parcel) {
