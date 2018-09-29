@@ -88,13 +88,39 @@ A config example you can find under ```config/server-example.json``` you can cop
 [source,bash]
 ----
 docker build -t cutl/parcel-tracking .
-docker run -p 8080:8080 -v $(pwd)/parcel.db:/usr/src/app/parcel.db -d cutl/parcel-tracking
+docker run -p 8080:8080 -v $(pwd)/parcel.db:/usr/src/app/parcel.db --name parcelTracking -d cutl/parcel-tracking
 docker run -p 8080:8080 -v $(pwd)/parcel.db:/usr/src/app/parcel.db -it cutl/parcel-tracking bash
 
+# get ip
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' parcelTracking
+
 # free space
+docker stop parcelTracking
+docker rm parcelTracking
 docker images -a
 docker rmi cutl/parcel-tracking -f
 docker images purge
 # remove every image
 docker system prune -a
+----
+
+=== nginx ===
+
+Proxy config is not nice at the moment but working with the following rules.
+
+TODO is that all the sub_filters are not needed any longer.
+
+----
+    location /parcelTracking/ {
+        proxy_pass http://172.17.0.7:8080/;
+        proxy_redirect ~/(.*)$ /parcelTracking/$1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+
+        sub_filter "href=\"/" "href=\"/parcelTracking/";
+        sub_filter "src=\"/" "src=\"/parcelTracking/";
+        sub_filter "action=\"/" "action=\"/parcelTracking/";
+        sub_filter_once off;
+    }
 ----
