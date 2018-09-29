@@ -1,2 +1,4 @@
 .idea
 node_modules
+parcel-dev.db
+parcel.db

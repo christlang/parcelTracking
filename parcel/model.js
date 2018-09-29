@@ -1,105 +1,191 @@
-let data = [
-    { id: 1,
-        order: 'carburettor',
-        destination: 'Mbagathi',
-        receiver: 'Werkstat',
-        orderDate: '2018-08-02',
-        itemInHaiger: true,
-        sentFromHaigerDate: '2018-08-03',
-        sentFromHaigerWith: 'Frank',
-        arrivedAtDestination: true,
-        comment: '',
-        itemProcessed: false
-    },
-    { id: 2,
-        order: 'transistor',
-        destination: 'Mbagathi',
-        receiver: 'Benjamin',
-        orderDate: '2018-08-02',
-        itemInHaiger: true,
-        sentFromHaigerDate: '2018-09-24',
-        sentFromHaigerWith: 'Axel',
-        arrivedAtDestination: true,
-        comment: '',
-        itemProcessed: false
-    },
-    { id: 3,
-        order: 'Raspberry Pi',
-        destination: 'Arua',
-        receiver: 'Martin',
-        orderDate: '2018-08-02',
-        itemInHaiger: false,
-        sentFromHaigerDate: '',
-        sentFromHaigerWith: '',
-        arrivedAtDestination: false,
-        comment: '',
-        itemProcessed: false
-    },
-    { id: 4,
-        order: 'WLAN-Antenna',
-        destination: 'Aru',
-        receiver: 'Hans',
-        orderDate: '2018-08-02',
-        itemInHaiger: false,
-        sentFromHaigerDate: '',
-        sentFromHaigerWith: '',
-        arrivedAtDestination: false,
-        comment: '',
-        itemProcessed: false
-    },
-    { id: 5,
-        order: 'turbine blade',
-        destination: 'Tinderet',
-        receiver: 'Siggi',
-        orderDate: '2018-08-02',
-        itemInHaiger: true,
-        sentFromHaigerDate: '2018-08-09',
-        sentFromHaigerWith: 'Uwe',
-        arrivedAtDestination: '2018-08-15',
-        comment: 'every thing okay',
-        itemProcessed: true
-    }
-];
+const sqlite = require('sqlite3');
+const db = new sqlite.Database('./parcel-dev.db');
 
-function getNextId() {
-    return Math.max(...data.map(parcel => parcel.id)) + 1;
+function getAll() {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM Parcels';
+        db.all(query, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+function getAllArchived() {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM Parcels WHERE itemProcessed = 1';
+        db.all(query, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+function getAllOpen() {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM Parcels WHERE itemProcessed = 0';
+        db.all(query, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
 }
 
 function insert(parcel) {
-    parcel.id = getNextId();
-    data.push(parcel);
+    return new Promise((resolve, reject) => {
+        const query = `
+INSERT INTO Parcels 
+    (
+          orderInfo, 
+          destination, 
+          receiver, 
+          orderDate, 
+          itemInCentral, 
+          sentFromCentral, 
+          sentFromCentralWith, 
+          arrivedAtDestination, 
+          comment, 
+          itemProcessed
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        db.run(query, [
+            parcel.orderInfo,
+            parcel.destination,
+            parcel.receiver,
+            parcel.orderDate,
+            parcel.itemInCentral,
+            parcel.sentFromCentral,
+            parcel.sentFromCentralWith,
+            parcel.arrivedAtDestination,
+            parcel.comment,
+            parcel.itemProcessed
+        ], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    });
 }
 
 function update(parcel) {
-    parcel.id = parseInt(parcel.id, 10);
-    const index = data.findIndex(item => item.id === parcel.id);
-    data[index] = parcel;
+    return new Promise((resolve, reject) => {
+        const query = `
+UPDATE Parcels
+SET 
+    orderInfo = ?, 
+    destination = ?, 
+    receiver = ?, 
+    orderDate = ?, 
+    itemInCentral = ?, 
+    sentFromCentral = ?, 
+    sentFromCentralWith = ?, 
+    arrivedAtDestination = ?, 
+    comment = ?, 
+    itemProcessed = ?
+WHERE id = ?
+`;
+        db.run(query, [
+            parcel.orderInfo,
+            parcel.destination,
+            parcel.receiver,
+            parcel.orderDate,
+            parcel.itemInCentral,
+            parcel.sentFromCentral,
+            parcel.sentFromCentralWith,
+            parcel.arrivedAtDestination,
+            parcel.comment,
+            parcel.itemProcessed,
+            parcel.id
+        ], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+function getOne(id) {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM Parcels WHERE id = ?';
+        db.get(query, [id], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    });
+}
+
+function archive(id) {
+    return new Promise((resolve, reject) => {
+        const query = `
+UPDATE Parcels
+SET 
+    itemProcessed = ?
+WHERE id = ?
+`;
+        db.run(query, [
+            1,
+            id
+        ], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+function unarchive(id) {
+    return new Promise((resolve, reject) => {
+        const query = `
+UPDATE Parcels
+SET 
+    itemProcessed = ?
+WHERE id = ?
+`;
+        db.run(query, [
+            0,
+            id
+        ], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
 }
 
 module.exports = {
-    getAll() {
-        return data;
-    },
-    archive(id) {
-        data = data.map(order => {
-            if (order.id === id) {
-                order.itemProcessed = true;
-            }
-            return order;
-        });
-    },
-    unarchive(id) {
-        data = data.map(order => {
-            if (order.id === id) {
-                order.itemProcessed = false;
-            }
-            return order;
-        });
-    },
+    getAll,
+    getAllOpen,
+    getAllArchived,
+    archive,
+    unarchive,
+    unarchive,
     get(id) {
-        return data.find(parcel => parcel.id === id);
+        return getOne(id);
     },
     save(parcel) {
-        parcel.id === '' ? insert(parcel) : update(parcel);
+        if (parcel.id) {
+            return update(parcel);
+        } else {
+            return insert(parcel);
+        }
     }
 };

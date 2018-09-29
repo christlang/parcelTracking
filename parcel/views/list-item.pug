@@ -3,16 +3,16 @@ mixin listItem(parcel)
         td #{parcel.id}
         td
             ul
-                li #{parcel.order}
+                li #{parcel.orderInfo}
                 li #{parcel.receiver}
                 li #{parcel.orderDate}
         td #{parcel.destination}
         td
-            img(src=parcel.itemInHaigerIcon)
+            img(src=parcel.itemInCentralIcon)
         td
             ul
-                li #{parcel.sentFromHaigerWith}
-                li #{parcel.sentFromHaigerDate}
+                li #{parcel.sentFromCentralWith}
+                li #{parcel.sentFromCentral}
         td
             img(src=parcel.arrivedAtDestinationIcon)
         td #{parcel.comment}

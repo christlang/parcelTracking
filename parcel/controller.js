@@ -1,35 +1,68 @@
 const model = require('./model');
 
-function prepareParcelForList(parcel) {
-    if (parcel.itemProcessed) {
-        parcel.itemProcessedAction = 'unarchive';
-        parcel.itemProcessedIcon = '/yes.png';
-    } else {
-        parcel.itemProcessedAction = 'archive';
-        parcel.itemProcessedIcon = '/no.png';
-    }
+function prepareParcelForList(parcels) {
+    return parcels.map(parcel => {
+        if (parcel.itemProcessed) {
+            parcel.itemProcessedAction = 'unarchive';
+            parcel.itemProcessedIcon = '/yes.png';
+        } else {
+            parcel.itemProcessedAction = 'archive';
+            parcel.itemProcessedIcon = '/no.png';
+        }
 
-    if (parcel.itemInHaiger) {
-        parcel.itemInHaigerIcon = '/yes.png';
-    } else {
-        parcel.itemInHaigerIcon = '/no.png';
-    }
+        if (parcel.itemInCentral) {
+            parcel.itemInCentralIcon = '/yes.png';
+        } else {
+            parcel.itemInCentralIcon = '/no.png';
+        }
 
-    if (parcel.arrivedAtDestination) {
-        parcel.arrivedAtDestinationIcon = '/yes.png';
-    } else {
-        parcel.arrivedAtDestinationIcon = '/no.png';
+        if (parcel.arrivedAtDestination) {
+            parcel.arrivedAtDestinationIcon = '/yes.png';
+        } else {
+            parcel.arrivedAtDestinationIcon = '/no.png';
+        }
+
+        parcel.orderDate = convertTimestampToDate(parcel.orderDate);
+        parcel.sentFromCentral = convertTimestampToDate(parcel.sentFromCentral);
+        parcel.arrivedAtDestination = convertTimestampToDate(parcel.arrivedAtDestination);
+
+        return parcel;
+    });
+}
+
+function prepareBooleanForSave(value) {
+    if (value === 'on') {
+        return 1;
     }
+    return 0;
+}
+
+/**
+ *
+ *
+ * @param timestamp expected format YYYY-MM-DD HH:MM:SS.SSS
+ * @return format YYYY-MM-DD
+ */
+function convertTimestampToDate(timestamp) {
+    if (timestamp === null) {
+        return '';
+    }
+    return timestamp.substr(0, 10);
 }
 
 function listAction(request, response) {
-    const parcels = model.getAll();
 
-    parcels.forEach(prepareParcelForList);
-
-    const parcelsOpen = parcels.filter(parcel => !parcel.itemProcessed);
-    const parcelsArchive = parcels.filter(parcel => parcel.itemProcessed);
-    response.render(__dirname + '/views/list', { parcelsOpen, parcelsArchive });
+    Promise.all([
+        model.getAllOpen().then(prepareParcelForList),
+        model.getAllArchived().then(prepareParcelForList)
+    ]).then(([parcelsOpen, parcelsArchive]) => {
+            response.render(__dirname + '/views/list', {
+                parcelsOpen, parcelsArchive });
+        })
+        .catch(error => {
+            console.log(error);
+            response.send(error)
+        });
 }
 
 function archiveAction(request, response) {
@@ -46,42 +79,54 @@ function unarchiveAction(request, response) {
 
 function formAction(request, response) {
     let parcel = {
-        order: '',
+        orderInfo: '',
         destination: '',
         receiver: '',
-        orderDate: '',
-        itemInHaiger: false,
-        sentFromHaigerDate: '',
-        sentFromHaigerWith: '',
+        orderDate: null,
+        itemInCentral: false,
+        sentFromCentral: null,
+        sentFromCentralWith: '',
         arrivedAtDestination: false,
         comment: '',
         itemProcessed: false
     };
 
     if (request.params.id) {
-        const id = parseInt(request.params.id, 10);
-        parcel = model.get(id);
-    }
+        const parcelId = parseInt(request.params.id, 10);
+        parcel = model.get(parcelId)
+            .then(parcel => {
+                parcel.orderDate = convertTimestampToDate(parcel.orderDate);
+                parcel.sentFromCentral = convertTimestampToDate(parcel.sentFromCentral);
+                parcel.arrivedAtDestination = convertTimestampToDate(parcel.arrivedAtDestination);
 
-    response.render(__dirname + '/views/form', { parcel });
+                response.render(__dirname + '/views/form', { parcel })
+            })
+            .catch(error => response.send(error));
+    } else {
+        response.render(__dirname + '/views/form', { parcel });
+    }
 }
 
 function saveAction(request, response) {
     const parcel = {
         id: request.body.id,
-        order: request.body.order,
+        orderInfo: request.body.orderInfo,
         destination: request.body.destination,
         receiver: request.body.receiver,
         orderDate: request.body.orderDate,
-        itemInHaiger: request.body.itemInHaiger,
-        sentFromHaigerDate: request.body.sentFromHaigerDate,
-        sentFromHaigerWith: request.body.sentFromHaigerWith,
+        itemInCentral: prepareBooleanForSave(request.body.itemInCentral),
+        sentFromCentral: request.body.sentFromCentral,
+        sentFromCentralWith: request.body.sentFromCentralWith,
         arrivedAtDestination: request.body.arrivedAtDestination,
         comment: request.body.comment,
-        itemProcessed: request.body.itemProcessed
+        itemProcessed: prepareBooleanForSave(request.body.itemProcessed)
     };
-    model.save(parcel);
-    response.redirect(request.baseUrl);
+    model.save(parcel)
+        .then(() => {
+            response.redirect(request.baseUrl);
+        })
+        .catch(error => response.send(error));
+
 }
 
 module.exports = {
