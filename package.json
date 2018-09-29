@@ -9,6 +9,7 @@
   "author": "cl",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.18.3",
     "connect-ensure-login": "^0.1.1",
     "db-migrate": "^0.11.3",

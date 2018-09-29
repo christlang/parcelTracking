@@ -1,30 +1,52 @@
 const passport = require('passport');
 const expressSession = require('express-session');
 const LocalStrategy = require('passport-local');
+const bcrypt = require('bcrypt');
+
+const userModel = require('./user/model');
+
+const SALT_ROUNDS = 10;
 
 module.exports = app => {
-    passport.serializeUser((user, done) => done(null, user.username));
+    passport.serializeUser((user, done) => done(null, user.id));
     passport.deserializeUser((id, done) => {
-        const user = {
-            username: 'test',
-            firstname: 'test',
-            lastname: 'test'
-        };
-        done(null, user);
+        userModel.get({id})
+            .then(user => {
+                if (!user) {
+                    done('user not found');
+                } else {
+                    done(null, user);
+                }
+            })
+            .catch(err => done(err));
     });
 
     passport.use(
         new LocalStrategy((username, password, done) => {
-            if (username === 'test' && password === 'test') {
-                const user = {
-                    username: 'test',
-                    firstname: 'test',
-                    lastname: 'test'
-                };
+            Promise.all([
+                userModel.get({username}),
+                bcrypt.hash(password, SALT_ROUNDS)
+            ]).then(([user, hash]) => {
+
+                if (!user) {
+                    return Promise.reject('user not found');
+                }
+
+                return Promise.all([
+                    Promise.resolve(user),
+                    bcrypt.compare(password, hash)
+                ]);
+            }).then(([user, hashOkay]) => {
+
+                if (!hashOkay) {
+                    reject('password not okay');
+                }
+
                 done(null, user);
-            } else {
+            }).catch(err => {
+                console.log('reason: ', err);
                 done('Not allowed');
-            }
+            });
         })
     );
 
