@@ -2,3 +2,5 @@
 node_modules
 parcel-dev.db
 parcel.db
+config/server.json
+cert

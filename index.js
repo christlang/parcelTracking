@@ -1,9 +1,13 @@
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const {ensureLoggedIn } = require('connect-ensure-login');
 const parcelRouter = require('./parcel');
 const auth = require('./auth');
+
+const config = require('./config').getConfig();
 
 const app = express();
 
@@ -23,6 +27,23 @@ app.use('/parcel', ensureLoggedIn('/login.html', parcelRouter));
 
 app.use('/parcel', parcelRouter);
 
-app.listen(8080, () => {
-    console.log('Server is listening to http://localhost:8080');
-});
+if (fs.existsSync(config.https.keyFile) && fs.existsSync(config.https.certFile)) {
+    const options = {
+        key: fs.readFileSync(config.https.keyFile),
+        cert: fs.readFileSync(config.https.certFile)
+    };
+
+    https.createServer(options, app).listen(config.port, () => {
+        console.log(`Server is listening to https://localhost:${config.port}`);
+    });
+} else {
+    console.log('');
+    console.error(`does not found key / cert files - fallback to http`);
+    console.error(`expected keyFile: ${config.https.keyFile}`);
+    console.error(`expected certFile: ${config.https.certFile}`);
+    console.log('');
+
+    app.listen(config.port, () => {
+        console.log(`Server is listening to http://localhost:${config.port}`);
+    });
+}

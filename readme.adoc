@@ -51,3 +51,22 @@ npx db-migrate down             # rollback
 There is no special data type for Date. But if it is formatted as ISO8601-string ("YYYY-MM-DD HH:MM:SS.SSS") than it will be handled as DATE.
 
 There is no special data type for BOOLEAN so INTEGER is used with values 1 and 0
+
+=== HTTPS ===
+
+* self-signed or letsEncrypt
+
+==== create self-signed certificate ====
+
+[source,bash]
+----
+mkdir cert
+cd cert
+openssl genrsa -out localhost.key 2048
+openssl req -new -x509 -key localhost.key -out localhost.cert -days 9999 -subj '/CN=localhost'
+cd ..
+----
+
+=== Config ===
+
+A config example you can find under ```config/server-example.json``` you can copy this to ```config/server.json``` and adjust the values to your need. All possible configs should be shown in the example.
