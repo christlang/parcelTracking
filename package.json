@@ -11,6 +11,7 @@
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.3",
+    "commander": "^2.18.0",
     "connect-ensure-login": "^0.1.1",
     "db-migrate": "^0.11.3",
     "db-migrate-sqlite3": "^0.3.1",
@@ -19,6 +20,7 @@
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "prompt": "^1.0.0",
     "pug": "^2.0.3",
     "response-time": "^2.3.2",
     "sqlite3": "^4.0.2"

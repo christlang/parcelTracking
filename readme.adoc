@@ -22,6 +22,17 @@ node index.js
 
 == help ==
 
+=== helper ===
+
+you can execute the helper program with ```node helper.js```
+
+[source,bash]
+----
+node helper.js user
+node helper.js user-add
+node helper.js user-del <username>
+----
+
 === Express-Middleware ===
 
 * http://expressjs.com/en/resources/middleware.html

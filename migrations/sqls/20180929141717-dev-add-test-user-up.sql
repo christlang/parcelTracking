@@ -3,13 +3,13 @@
 
 INSERT INTO 'Users' (`firstname`, `lastname`, `username`, `password`) VALUES
   (
+    'test',
+    'test',
     'test1',
-    'test',
-    'test',
     '$2a$10$ZweZbb3TIOtJqHW4O9.ZD.2.Ht7klIYNvlHdDsGyKtp4Von75uurK'
   ), (
+    'test',
+    'test',
     'test2',
-    'test',
-    'test',
     '$2a$10$9BlV00cMao5.YJlcIbVvu.yVuxwFW3WJddEn85yEwFLFZjjP4P4xK'
   );

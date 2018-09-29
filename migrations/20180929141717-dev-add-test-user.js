@@ -38,7 +38,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  var filePath = path.join(__didevrname, 'sqls', '20180929141717-dev-add-test-user-down.sql');
+  var filePath = path.join(__dirname, 'sqls', '20180929141717-dev-add-test-user-down.sql');
   if (db.internals.argv.env === 'prod') {
       console.log('skip for env === prod');
       return Promise.resolve();
