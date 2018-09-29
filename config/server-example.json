@@ -1,4 +1,5 @@
 {
+  "database": "./parcel-dev.db",
   "https": {
     "keyFile": "./cert/localhost.key",
     "certFile": "./cert/localhost.cert"

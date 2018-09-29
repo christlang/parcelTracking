@@ -1,5 +1,7 @@
 const sqlite = require('sqlite3');
-const db = new sqlite.Database('./parcel-dev.db');
+
+const config = require('../config').getConfig();
+const db = new sqlite.Database(config.database);
 
 function get(query = {}) {
     return new Promise((resolve, reject) => {
