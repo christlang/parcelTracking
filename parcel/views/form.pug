@@ -3,35 +3,37 @@ extends ../../templates/base
 block content
     form(action="/parcel/save" method="post")
         input(type="hidden" id="id" name="id" value=parcel.id)
-        div
+        fieldset
+            legend
+                span Enter data
             label(for="orderInfo") Order:
             input(type="text" id="orderInfo" name="orderInfo" value=parcel.orderInfo)
-        div
+
             label(for="destination") Destination:
             input(type="text" id="destination" name="destination" value=parcel.destination)
-        div
+
             label(for="receiver") Receiver:
             input(type="text" id="receiver" name="receiver" value=parcel.receiver)
-        div
+
             label(for="orderDate") Order date:
             input(type="date" id="orderDate" name="orderDate" value=parcel.orderDate)
-        div
+
             label(for="itemInCentral") Item in Haiger:
             input(type="checkbox" id="itemInCentral" name="itemInCentral" checked=(parcel.itemInCentral===1))
-        div
+
             label(for="sentFromCentral") Sent from Haiger (date):
             input(type="date" id="sentFromCentral" name="sentFromCentral" value=parcel.sentFromCentral)
-        div
+
             label(for="sentFromCentralWith") Sent from Haiger (with):
             input(type="text" id="sentFromCentralWith" name="sentFromCentralWith" value=parcel.sentFromCentralWith)
-        div
+
             label(for="arrivedAtDestination") Arrived at destination:
             input(type="date" id="arrivedAtDestination" name="arrivedAtDestination" value=parcel.arrivedAtDestination)
-        div
+
             label(for="comment") Comment:
-            input(type="text" id="comment" name="comment" value=parcel.comment)
-        div
+            textarea(id="comment" name="comment" value=parcel.comment) #{parcel.comment}
+
             label(for="itemProcessed") Item processed:
             input(type="checkbox" id="itemProcessed" name="itemProcessed" checked=(parcel.itemProcessed===1))
-        div
+
             button(type="submit") save

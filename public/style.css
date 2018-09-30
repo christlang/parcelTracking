@@ -32,3 +32,20 @@ li {
 li:last-child {
     border: none;
 }
+
+fieldset label {
+    float: left; /* will be presented next to each other: label - input */
+    width: 15em;
+    padding-top: 0.3em;
+    text-align: right;
+    margin-right: 1.5em;
+}
+
+fieldset input, fieldset textarea {
+    display: block; /* line break after every input */
+    font-size: 1em;
+    margin-bottom: 0.8em;
+    border: 0.1em solid #000;
+    padding: 0.1em;
+    align: left;
+}
