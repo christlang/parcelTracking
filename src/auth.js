@@ -23,10 +23,8 @@ module.exports = app => {
 
     passport.use(
         new LocalStrategy((username, password, done) => {
-            Promise.all([
-                userModel.get({username}),
-                bcrypt.hash(password, SALT_ROUNDS)
-            ]).then(([user, hash]) => {
+            userModel.get({username})
+            .then(user => {
 
                 if (!user) {
                     return Promise.reject('user not found');
@@ -34,7 +32,7 @@ module.exports = app => {
 
                 return Promise.all([
                     Promise.resolve(user),
-                    bcrypt.compare(password, hash)
+                    bcrypt.compare(password, user.password)
                 ]);
             }).then(([user, hashOkay]) => {
 
@@ -74,4 +72,3 @@ module.exports = app => {
         response.redirect('/');
     });
 };
-

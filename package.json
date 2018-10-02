@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test-cafe": "testcafe chrome test/testcafe/",
+    "test-cafe-headless": "testcafe chrome:headless test/testcafe/"
   },
   "author": "cl",
   "license": "MIT",
@@ -26,5 +28,8 @@
     "response-time": "^2.3.2",
     "shelljs": "^0.8.2",
     "sqlite3": "^4.0.2"
+  },
+  "devDependencies": {
+    "testcafe": "^0.22.0"
   }
 }
