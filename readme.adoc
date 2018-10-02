@@ -17,10 +17,10 @@ Steps to start the app.
 ----
 nvm use 8
 npm install
-npx db-migrate up        # create database
+npx db-migrate up        # create database (development)
 node helper.js user-add  # add user for login
 
-node index.js            # start the app
+npm start                # start the app
 ----
 
 

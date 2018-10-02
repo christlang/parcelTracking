@@ -7,7 +7,7 @@ function getConfig() {
     let config;
 
     if (fs.existsSync(defaultConfig)) {
-        config = require(defaultConfig);
+        config = JSON.parse(fs.readFileSync(defaultConfig, 'UTF-8'));
     } else if (fs.existsSync(fallbackConfig)) {
         console.log('');
         console.log(`You are using the fallback config: ${fallbackConfig}`);
@@ -15,7 +15,7 @@ function getConfig() {
         console.log(`please provide a usual config (copy the example)`);
         console.log('');
 
-        config = require(fallbackConfig);
+        config = JSON.parse(fs.readFileSync(fallbackConfig));
     } else {
         console.log('');
         console.log('can not find a config, giving up start');
