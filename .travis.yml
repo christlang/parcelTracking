@@ -1,0 +1,16 @@
+language: node_js
+
+node_js:
+  - "8.11.3"
+
+addons:
+  chrome: stable
+
+script:
+- cp config/server-dev.json config/server.json
+- npx db-migrate up
+- npm run ci-ui-tests
+
+cache:
+  directories:
+  - "node_modules"

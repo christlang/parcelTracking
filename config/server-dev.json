@@ -1,5 +1,5 @@
 {
-  "database": "/usr/src/app/parcel-dev.db",
+  "database": "./parcel-dev.db",
   "https": {
     "keyFile": "",
     "certFile": ""
