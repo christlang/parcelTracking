@@ -1,3 +1,5 @@
+image:https://travis-ci.com/christlang/parcelTracking.svg?branch=master["Build Status", link="https://travis-ci.com/christlang/parcelTracking"]
+
 :toc:
 
 Project to discover different ways for a node-server application.
