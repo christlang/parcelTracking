@@ -179,6 +179,50 @@ function update() {
         .catch(error => console.log(error));
 }
 
+
+function requestServer() {
+    return new Promise((resolve, reject) => {
+        const http = require('http');
+
+        http.get({
+            hostname: 'localhost',
+            port: config.port,
+            timeout: 1000
+        }, (resp) => {
+
+            // The whole response has been received. Print out the result.
+            resp.on('end', () => {
+                console.log('success');
+                resolve();
+            });
+
+        }).on("error", (err) => {
+            console.log(err.message);
+            reject("Error: " + err.message);
+        });
+    });
+}
+
+function waitForServer() {
+
+    let counter = 60;
+
+    function requestServerLoop() {
+        requestServer()
+            .catch(() => {
+                counter--;
+                if (counter > 0) {
+                    setTimeout(requestServerLoop, 1000);
+                } else {
+                    console.log('giving up');
+                    process.exit(1);
+                }
+            });
+    }
+
+    requestServerLoop();
+}
+
 nobot
     .version(version);
 
@@ -202,6 +246,11 @@ nobot
     .command('update')
     .description('updates to last version in git, runs db-migration and creates new docker-instance')
     .action(update);
+
+nobot
+    .command('wait-for-server')
+    .description('helps for ci-builds to wait until server is ready for ui-tests')
+    .action(waitForServer);
 
 nobot.parse(process.argv);
 
