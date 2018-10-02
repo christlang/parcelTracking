@@ -10,10 +10,16 @@ before_script:
 - cp config/server-dev.json config/server.json
 - npx db-migrate up
 - npm run start &
+- echo $! > server.pid
+- cat server.pid
 - node helper.js wait-for-server
 
 script:
 - npm run test-cafe-headless
+
+after_script:
+- kill $(cat server.pid)
+- echo 'finished'
 
 cache:
   directories:
