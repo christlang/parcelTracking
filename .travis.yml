@@ -6,10 +6,13 @@ node_js:
 addons:
   chrome: stable
 
-script:
+before_script:
 - cp config/server-dev.json config/server.json
 - npx db-migrate up
-- npm run ci-ui-tests
+- npm run start
+
+script:
+- npm run test-cafe-headless
 
 cache:
   directories:
