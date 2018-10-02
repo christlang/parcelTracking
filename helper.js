@@ -40,7 +40,7 @@ function sqlRemoveUser(username) {
     });
 }
 
-function sqlAddUser(username, firstname, lastname, password) {
+function sqlAddUser(username, firstname, lastname, hash) {
     return new Promise((resolve, reject)  => {
         const db = new sqlite.Database(config.database);
         const queryString = 'INSERT INTO Users ' +
@@ -49,7 +49,7 @@ function sqlAddUser(username, firstname, lastname, password) {
             '(?, ?, ?, ?)';
 
         db.all(queryString,
-            [firstname, lastname, username, password],
+            [firstname, lastname, username, hash],
             (error, results) => {
                 if (error) {
                    reject(error);
@@ -86,10 +86,12 @@ function dbUserAdd() {
             process.exit(1);
         }
         const {username, firstname, lastname, password, confirm} = result;
+        let passwordHash;
 
         bcrypt.hash(password, 10)
             .then(hash => {
                 console.log('hash: ', hash);
+                passwordHash = hash;
                 return bcrypt.compare(confirm, hash)
             })
             .then(res => {
@@ -102,7 +104,7 @@ function dbUserAdd() {
             })
             .then(() => sqlRemoveUser(username))
             .then(console.log)
-            .then(() => sqlAddUser(username, firstname, lastname, password))
+            .then(() => sqlAddUser(username, firstname, lastname, passwordHash))
             .then(console.log)
             .then(() => console.log('input received - user created'))
             .catch(err => {
@@ -164,6 +166,7 @@ function update() {
     const dockerPortExtern = config.docker.exposedPort;
     const dbFile = config.database;
     run('git pull')
+        .catch(() => process.exit(1))
         .then(() => run(`sudo docker stop ${containerName}`)) // stop before db-migration
         .then(() => run(`sudo docker wait ${containerName}`)) // wait for stopdoc
         .catch(() => console.log('ignore if container was not running'))
