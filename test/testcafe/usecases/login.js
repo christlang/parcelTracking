@@ -3,7 +3,7 @@ const Browser = require('../html/browser');
 const Login = require('../html/login');
 
 fixture `login`
-    .page `http://localhost:${port}/`;
+    .page `http://localhost:${port}`;
 
 test('incorrect login', async t => {
     const login = new Login(t);

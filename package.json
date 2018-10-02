@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "test-cafe": "testcafe chrome test/testcafe/",
-    "test-cafe-headless": "testcafe chrome:headless test/testcafe/",
+    "test-cafe-headless": "testcafe firefox:headless test/testcafe/",
     "ci-ui-tests": "npm-run-all --print-label --parallel --race start test-cafe-headless"
   },
   "author": "cl",
