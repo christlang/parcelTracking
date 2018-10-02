@@ -168,7 +168,7 @@ function update() {
         .then(() => run(`sudo docker wait ${containerName}`)) // wait for stopdoc
         .catch(() => console.log('ignore if container was not running'))
         .then(() => backupDB())
-        .then(() => run('npx db-migrate up'))
+        .then(() => run('npx db-migrate up --env prod'))
         .then(() => run(`sudo docker build -t ${tagName} .`))
         .then(() => run(`sudo docker rm ${containerName}`)) // delete old container
         .catch(() => console.log('ignore if container can not be delete (was not running)'))
