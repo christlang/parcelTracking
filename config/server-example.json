@@ -4,5 +4,10 @@
     "keyFile": "./cert/localhost.key",
     "certFile": "./cert/localhost.cert"
   },
-  "port": 8080
+  "port": 8080,
+  "docker": {
+    "containerName": "parcelTracking",
+    "tagName": "cutl/parcel-tracking",
+    "exposedPort": 8080
+  }
 }

@@ -35,6 +35,13 @@ you can execute the helper program with ```node helper.js```
 node helper.js user
 node helper.js user-add
 node helper.js user-del <username>
+
+# updating
+# pull from git
+# create new docker container
+# start the new container
+# configuration is in server-example.json
+node helper.js update
 ----
 
 === Express-Middleware ===
@@ -85,6 +92,12 @@ cd ..
 === Config ===
 
 A config example you can find under ```config/server-example.json``` you can copy this to ```config/server.json``` and adjust the values to your need. All possible configs should be shown in the example.
+
+Different files:
+* server-docker.json - will be used for docker-image
+* server-example.json - is template for an own configuration
+* server.json - not in git is the adapted configuration form server-example.json
+* database.json - used for db-migrate
 
 
 === docker ===

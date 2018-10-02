@@ -2,10 +2,11 @@ const bcrypt = require('bcrypt');
 const nobot = require('commander');
 const prompt = require('prompt');
 const sqlite = require('sqlite3');
-const {stdin, stdout} = require('process');
+const sh = require('shelljs');
+const fs = require('fs');
 
 const {version} = require('./package');
-const config = require('./config').getConfig();
+const config = require('./src/config').getConfig();
 
 function dbUserList() {
     const db = new sqlite.Database(config.database);
@@ -125,6 +126,56 @@ function dbUserDel(username) {
         })
 }
 
+function run(cmd) {
+    return new Promise((resolve, reject) => {
+        sh.exec(cmd, function(code, stdout, stderr) {
+            console.log(`Command: ${cmd}`);
+            console.log('Exit code:', code);
+            console.log('output:', stdout);
+            console.log('stderr:', stderr);
+            if (code === 0) {
+                resolve();
+            } else {
+                reject(code);
+            }
+        });
+    });
+}
+
+function backupDB() {
+    const backupRoot = 'dbBackup';
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const day = now.getDay();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+    const sec = now.getSeconds();
+    const folderName = `${year}_${month}_${day}__${hour}_${min}_${sec}`;
+    const backupPath = `${backupRoot}/${folderName}`;
+    sh.mkdir('-p', backupPath);
+    sh.cp(config.database, backupPath);
+}
+
+function update() {
+    const tagName = config.docker.tagName;
+    const containerName = config.docker.containerName;
+    const dockerPortIntern = config.port;
+    const dockerPortExtern = config.docker.exposedPort;
+    const dbFile = config.database;
+    run('git pull')
+        .then(() => run(`sudo docker stop ${containerName}`)) // stop before db-migration
+        .then(() => run(`sudo docker wait ${containerName}`)) // wait for stopdoc
+        .catch(() => console.log('ignore if container was not running'))
+        .then(() => backupDB())
+        .then(() => run('npx db-migrate up'))
+        .then(() => run(`sudo docker build -t ${tagName} .`))
+        .then(() => run(`sudo docker rm ${containerName}`)) // delete old container
+        .catch(() => console.log('ignore if container can not be delete (was not running)'))
+        .then(() => run(`sudo docker run -p ${dockerPortExtern}:${dockerPortIntern} -v $(pwd)/${dbFile}:/usr/src/app/parcel.db --name ${containerName} -d ${tagName}`))
+        .catch(error => console.log(error));
+}
+
 nobot
     .version(version);
 
@@ -142,6 +193,12 @@ nobot
     .command('user-del <username>')
     .description('delets user identified by username')
     .action(dbUserDel);
+
+
+nobot
+    .command('update')
+    .description('updates to last version in git, runs db-migration and creates new docker-instance')
+    .action(update);
 
 nobot.parse(process.argv);
 
