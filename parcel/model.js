@@ -32,12 +32,14 @@ function getCheckedCreteria(orderBy) {
     return 'id';
 }
 
-function getAllArchivedOrNot(processed, orderBy) {
+function getAllArchivedOrNot(arrivedAtDestination, orderBy) {
     const orderCriteria = getCheckedCreteria(orderBy);
 
     return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM Parcels WHERE itemProcessed = ? ORDER BY ${orderCriteria}`;
-        db.all(query, [processed], (error, results) => {
+        const query = arrivedAtDestination ?
+                `SELECT * FROM Parcels WHERE arrivedAtDestination IS NOT NULL ORDER BY ${orderCriteria}`
+            :   `SELECT * FROM Parcels WHERE arrivedAtDestination IS NULL ORDER BY ${orderCriteria}`;
+        db.all(query, (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -48,11 +50,11 @@ function getAllArchivedOrNot(processed, orderBy) {
 }
 
 function getAllArchived(orderBy) {
-    return getAllArchivedOrNot(1, orderBy);
+    return getAllArchivedOrNot(true, orderBy);
 }
 
 function getAllOpen(orderBy) {
-    return getAllArchivedOrNot(0, orderBy);
+    return getAllArchivedOrNot(false, orderBy);
 }
 
 function insert(parcel) {
@@ -68,9 +70,8 @@ INSERT INTO Parcels
           sentFromCentral, 
           sentFromCentralWith, 
           arrivedAtDestination, 
-          comment, 
-          itemProcessed
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+          comment
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         db.run(query, [
             parcel.orderInfo,
             parcel.destination,
@@ -80,8 +81,7 @@ INSERT INTO Parcels
             parcel.sentFromCentral,
             parcel.sentFromCentralWith,
             parcel.arrivedAtDestination,
-            parcel.comment,
-            parcel.itemProcessed
+            parcel.comment
         ], (error, results) => {
             if (error) {
                 reject(error);
@@ -105,8 +105,7 @@ SET
     sentFromCentral = ?, 
     sentFromCentralWith = ?, 
     arrivedAtDestination = ?, 
-    comment = ?, 
-    itemProcessed = ?
+    comment = ?
 WHERE id = ?
 `;
         db.run(query, [
@@ -119,7 +118,6 @@ WHERE id = ?
             parcel.sentFromCentralWith,
             parcel.arrivedAtDestination,
             parcel.comment,
-            parcel.itemProcessed,
             parcel.id
         ], (error, results) => {
             if (error) {
@@ -144,16 +142,16 @@ function getOne(id) {
     });
 }
 
-function archive(id) {
+function archive(id, date) {
     return new Promise((resolve, reject) => {
         const query = `
 UPDATE Parcels
 SET 
-    itemProcessed = ?
+    arrivedAtDestination = ?
 WHERE id = ?
 `;
         db.run(query, [
-            1,
+            date,
             id
         ], (error, results) => {
             if (error) {
@@ -170,11 +168,10 @@ function unarchive(id) {
         const query = `
 UPDATE Parcels
 SET 
-    itemProcessed = ?
+    arrivedAtDestination = NULL
 WHERE id = ?
 `;
         db.run(query, [
-            0,
             id
         ], (error, results) => {
             if (error) {
@@ -191,7 +188,6 @@ module.exports = {
     getAllOpen,
     getAllArchived,
     archive,
-    unarchive,
     unarchive,
     get(id) {
         return getOne(id);

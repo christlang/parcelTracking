@@ -2,13 +2,6 @@ const model = require('./model');
 
 function prepareParcelForList(parcels) {
     return parcels.map(parcel => {
-        if (parcel.itemProcessed) {
-            parcel.itemProcessedAction = 'unarchive';
-            parcel.itemProcessedIcon = '/yes.png';
-        } else {
-            parcel.itemProcessedAction = 'archive';
-            parcel.itemProcessedIcon = '/no.png';
-        }
 
         if (parcel.itemInCentral) {
             parcel.itemInCentralIcon = '/yes.png';
@@ -17,8 +10,10 @@ function prepareParcelForList(parcels) {
         }
 
         if (parcel.arrivedAtDestination) {
+            parcel.arrivedAtDestinationAction = 'unarchive';
             parcel.arrivedAtDestinationIcon = '/yes.png';
         } else {
+            parcel.arrivedAtDestinationAction = 'archive';
             parcel.arrivedAtDestinationIcon = '/no.png';
         }
 
@@ -68,7 +63,8 @@ function listAction(request, response) {
 
 function archiveAction(request, response) {
     const id = parseInt(request.params.id, 10);
-    model.archive(id);
+    const now = new Date();
+    model.archive(id, now.toISOString());
     response.redirect(request.baseUrl);
 }
 
@@ -88,8 +84,7 @@ function formAction(request, response) {
         sentFromCentral: null,
         sentFromCentralWith: '',
         arrivedAtDestination: false,
-        comment: '',
-        itemProcessed: false
+        comment: ''
     };
 
     if (request.params.id) {
@@ -119,8 +114,7 @@ function saveAction(request, response) {
         sentFromCentral: request.body.sentFromCentral,
         sentFromCentralWith: request.body.sentFromCentralWith,
         arrivedAtDestination: request.body.arrivedAtDestination,
-        comment: request.body.comment,
-        itemProcessed: prepareBooleanForSave(request.body.itemProcessed)
+        comment: request.body.comment
     };
     model.save(parcel)
         .then(() => {

@@ -13,11 +13,9 @@ mixin listItem(parcel)
             ul
                 li #{parcel.sentFromCentralWith}
                 li #{parcel.sentFromCentral}
-        td
-            img(src=parcel.arrivedAtDestinationIcon)
         td #{parcel.comment}
         td
-            a(href="/parcel/"+parcel.itemProcessedAction+"/"+parcel.id)
-                img(src=parcel.itemProcessedIcon)
+            a(href="/parcel/"+parcel.arrivedAtDestinationAction+"/"+parcel.id)
+                img(src=parcel.arrivedAtDestinationIcon)
         td
             a(href="/parcel/form/" + parcel.id) edit

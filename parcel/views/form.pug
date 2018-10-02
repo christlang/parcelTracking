@@ -27,13 +27,10 @@ block content
             label(for="sentFromCentralWith") Sent from Haiger (with):
             input(type="text" id="sentFromCentralWith" name="sentFromCentralWith" value=parcel.sentFromCentralWith)
 
-            label(for="arrivedAtDestination") Arrived at destination:
-            input(type="date" id="arrivedAtDestination" name="arrivedAtDestination" value=parcel.arrivedAtDestination)
-
             label(for="comment") Comment:
             textarea(id="comment" name="comment" value=parcel.comment) #{parcel.comment}
 
-            label(for="itemProcessed") Item processed:
-            input(type="checkbox" id="itemProcessed" name="itemProcessed" checked=(parcel.itemProcessed===1))
+            label(for="arrivedAtDestination") Arrived at destination:
+            input(type="date" id="arrivedAtDestination" name="arrivedAtDestination" value=parcel.arrivedAtDestination)
 
             button(type="submit") save
