@@ -1,0 +1,8 @@
+{
+  "database": "/usr/src/app/parcel-dev.db",
+  "https": {
+    "keyFile": "",
+    "certFile": ""
+  },
+  "port": 8080
+}
