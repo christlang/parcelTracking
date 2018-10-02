@@ -13,10 +13,14 @@ a main station.
 
 Steps to start the app.
 
+[source,bash]
 ----
 nvm use 8
 npm install
-node index.js
+npx db-migrate up        # create database
+node helper.js user-add  # add user for login
+
+node index.js            # start the app
 ----
 
 
