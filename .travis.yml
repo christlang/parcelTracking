@@ -9,7 +9,7 @@ addons:
 before_script:
 - cp config/server-dev.json config/server.json
 - npx db-migrate up
-- npm run start &
+- npm run start &> server.log &
 - echo $! > server.pid
 - cat server.pid
 - node helper.js wait-for-server
@@ -20,6 +20,7 @@ script:
 after_script:
 - kill $(cat server.pid)
 - echo 'finished'
+- cat server.log
 
 cache:
   directories:
