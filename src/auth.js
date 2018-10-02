@@ -37,7 +37,7 @@ module.exports = app => {
             }).then(([user, hashOkay]) => {
 
                 if (!hashOkay) {
-                    reject('password not okay');
+                    return Promise.reject('password not okay');
                 }
 
                 done(null, user);
