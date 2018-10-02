@@ -9,7 +9,8 @@ addons:
 before_script:
 - cp config/server-dev.json config/server.json
 - npx db-migrate up
-- npm run start
+- npm run start &
+- echo 'next step'
 
 script:
 - npm run test-cafe-headless
