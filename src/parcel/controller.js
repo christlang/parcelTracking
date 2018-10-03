@@ -113,7 +113,7 @@ function saveAction(request, response) {
         itemInCentral: prepareBooleanForSave(request.body.itemInCentral),
         sentFromCentral: request.body.sentFromCentral,
         sentFromCentralWith: request.body.sentFromCentralWith,
-        arrivedAtDestination: request.body.arrivedAtDestination,
+        arrivedAtDestination: request.body.arrivedAtDestination === '' ? null : request.body.arrivedAtDestination,
         comment: request.body.comment
     };
     model.save(parcel)
