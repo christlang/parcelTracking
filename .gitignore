@@ -5,3 +5,4 @@ parcel.db
 config/server.json
 cert
 lock.pid
+npm-debug.log
