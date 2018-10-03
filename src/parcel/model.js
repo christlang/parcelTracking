@@ -4,6 +4,20 @@ const config = require('../config').getConfig();
 
 const db = new sqlite.Database(config.database);
 
+/**
+ * The return-value will be used directly in a sql-query. So make sure
+ * is not dangerous. Uses a whitelist of allowed values.
+ *
+ * @param orderBy
+ * @return {*}
+ */
+function getCheckedCreteria(orderBy) {
+  if (['id', 'destination', 'arrivedAtDestination'].includes(orderBy)) {
+    return orderBy;
+  }
+  return 'id';
+}
+
 function getAll(orderBy) {
   const orderCriteria = getCheckedCreteria(orderBy);
 
@@ -17,20 +31,6 @@ function getAll(orderBy) {
       }
     });
   });
-}
-
-/**
- * The return-value will be used directly in a sql-query. So make sure
- * is not dangerous. Uses a whitelist of allowed values.
- *
- * @param orderBy
- * @return {*}
- */
-function getCheckedCreteria(orderBy) {
-  if (['id', 'destination', 'arrivedAtDestination'].includes(orderBy)) {
-    return orderBy;
-  }
-  return 'id';
 }
 
 function getAllArchivedOrNot(arrivedAtDestination, orderBy) {

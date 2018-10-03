@@ -1,3 +1,5 @@
+// is used on the console
+/* eslint no-console: "off" */
 const https = require('https');
 const fs = require('fs');
 const express = require('express');

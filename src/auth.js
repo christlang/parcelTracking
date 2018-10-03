@@ -1,11 +1,11 @@
+/* eslint no-console: ["error", { allow: ["warn", "error"] }]  */
+
 const passport = require('passport');
 const expressSession = require('express-session');
 const LocalStrategy = require('passport-local');
 const bcrypt = require('bcrypt');
 
 const userModel = require('./user/model');
-
-const SALT_ROUNDS = 10;
 
 module.exports = (app) => {
   passport.serializeUser((user, done) => done(null, user.id));
@@ -26,7 +26,7 @@ module.exports = (app) => {
       userModel.get({ username })
         .then((user) => {
           if (!user) {
-            return Promise.reject('user not found');
+            throw new Error('user not found');
           }
 
           return Promise.all([
@@ -35,12 +35,12 @@ module.exports = (app) => {
           ]);
         }).then(([user, hashOkay]) => {
           if (!hashOkay) {
-            return Promise.reject('password not okay');
+            throw new Error('password not okay');
           }
 
           done(null, user);
         }).catch((err) => {
-          console.log('reason: ', err);
+          console.warn('reason: ', err);
           done('Not allowed');
         });
     }),

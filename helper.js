@@ -1,9 +1,12 @@
+// is used on the console
+/* eslint no-console: "off" */
+
 const bcrypt = require('bcrypt');
 const nobot = require('commander');
 const prompt = require('prompt');
 const sqlite = require('sqlite3');
 const sh = require('shelljs');
-const fs = require('fs');
+const http = require('http');
 
 const { version } = require('./package');
 const config = require('./src/config').getConfig();
@@ -50,7 +53,7 @@ function sqlAddUser(username, firstname, lastname, hash) {
 
     db.all(queryString,
       [firstname, lastname, username, hash],
-      (error, results) => {
+      (error) => {
         if (error) {
           reject(error);
         } else {
@@ -61,8 +64,6 @@ function sqlAddUser(username, firstname, lastname, hash) {
 }
 
 function dbUserAdd() {
-  const db = new sqlite.Database(config.database);
-
   prompt.start();
   console.log('');
   console.log(`you are working on ${config.database}`);
@@ -98,19 +99,18 @@ function dbUserAdd() {
       })
       .then((res) => {
         if (res) {
-          console.log('password  confirmed');
-        } else {
-          return Promise.reject('password is not equal');
+          return console.log('password  confirmed');
         }
+        throw new Error('password is not equal');
       })
       .then(() => sqlRemoveUser(username))
       .then(console.log)
       .then(() => sqlAddUser(username, firstname, lastname, passwordHash))
       .then(console.log)
       .then(() => console.log('input received - user created'))
-      .catch((err) => {
+      .catch((error) => {
         console.error('');
-        console.error(err);
+        console.error(error);
       });
   });
 }
@@ -160,8 +160,7 @@ function backupDB() {
 }
 
 function update() {
-  const tagName = config.docker.tagName;
-  const containerName = config.docker.containerName;
+  const { tagName, containerName } = config.docker;
   const dockerPortIntern = config.port;
   const dockerPortExtern = config.docker.exposedPort;
   const dbFile = config.database;
@@ -182,8 +181,6 @@ function update() {
 
 function requestServer() {
   return new Promise((resolve, reject) => {
-    const http = require('http');
-
     http.get({
       hostname: 'localhost',
       port: config.port,
@@ -196,7 +193,7 @@ function requestServer() {
       });
     }).on('error', (err) => {
       console.log(err.message);
-      reject(`Error: ${err.message}`);
+      reject(new Error(`Error: ${err.message}`));
     });
   });
 }
@@ -207,7 +204,7 @@ function waitForServer() {
   function requestServerLoop() {
     requestServer()
       .catch(() => {
-        counter--;
+        counter -= 1;
         if (counter > 0) {
           setTimeout(requestServerLoop, 1000);
         } else {

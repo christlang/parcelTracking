@@ -8,9 +8,9 @@ function get(query = {}) {
   return new Promise((resolve, reject) => {
     const queryElements = [];
     if (query) {
-      for (const key in query) {
+      Object.keys(query).forEach((key) => {
         queryElements.push(`${key} = ?`);
-      }
+      });
     }
 
     const queryString = `SELECT * FROM Users WHERE ${queryElements.join(' AND ')}`;

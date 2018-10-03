@@ -1,3 +1,6 @@
+// is used on the console
+/* eslint no-console: "off" */
+
 const fs = require('fs');
 
 function getConfig() {
