@@ -1,12 +1,12 @@
 const {port} = require('../config');
 const Browser = require('../html/browser');
-const LoginUc = require('../html/LoginPageObject');
+const Login = require('../html/LoginPageObject');
 
 fixture `login`
     .page `http://localhost:${port}`;
 
 test('incorrect login', async t => {
-    const login = new LoginUc(t);
+    const login = new Login(t);
     const browser = new Browser(t);
 
     await login.enterUser('test');
@@ -18,7 +18,7 @@ test('incorrect login', async t => {
 });
 
 test('correct login', async t => {
-    const login = new LoginUc(t);
+    const login = new Login(t);
     const browser = new Browser(t);
 
     await login.enterUser('test');
