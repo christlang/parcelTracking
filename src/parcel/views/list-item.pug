@@ -1,21 +1,21 @@
 mixin listItem(parcel)
     tr
-        td #{parcel.id}
+        td(id='id-' + parcel.id) #{parcel.id}
         td
             ul
-                li #{parcel.orderInfo}
-                li #{parcel.receiver}
-                li #{parcel.orderDate}
-        td #{parcel.destination}
+                li(class='orderInfo') #{parcel.orderInfo}
+                li(class='receiver') #{parcel.receiver}
+                li(class='orderDate') #{parcel.orderDate}
+        td(class='destination') #{parcel.destination}
         td
-            img(src=parcel.itemInCentralIcon)
+            img(class='itemInCentral' src=parcel.itemInCentralIcon)
         td
             ul
-                li #{parcel.sentFromCentralWith}
-                li #{parcel.sentFromCentral}
-        td #{parcel.comment}
+                li(class='sentFromCentralWith') #{parcel.sentFromCentralWith}
+                li(class='sentFromCentral') #{parcel.sentFromCentral}
+        td(class='comment') #{parcel.comment}
         td
             a(href="/parcel/"+parcel.arrivedAtDestinationAction+"/"+parcel.id)
-                img(src=parcel.arrivedAtDestinationIcon)
+                img(class='arrived' src=parcel.arrivedAtDestinationIcon)
         td
             a(href="/parcel/form/" + parcel.id id="edit-" + parcel.id) edit
