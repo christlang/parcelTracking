@@ -15,6 +15,7 @@ before_script:
 - node helper.js wait-for-server
 
 script:
+- npm run lint
 - npm run test-cafe-headless
 
 after_script:
