@@ -5,18 +5,19 @@ const Parcels = require('../html/parcels');
 const ParcelsForm = require('../html/parcelsForm');
 
 fixture `parcels`
-    .page `http://localhost:${port}`;
+    .page `http://localhost:${port}`
+    .beforeEach(async t => {
+        const login = new Login(t);
+        const browser = new Browser(t);
 
+        await login.enterUser('test');
+        await login.enterPass('test');
+        await login.submit();
 
-
+    });
 
 test('logout', async t => {
-    const login = new Login(t);
     const browser = new Browser(t);
-
-    await login.enterUser('test');
-    await login.enterPass('test');
-    await login.submit();
 
     const parcels = new Parcels(t);
     await parcels.logout();
@@ -28,34 +29,22 @@ test('logout', async t => {
 
 
 test('edit parcel and just save should not change field arrived', async t => {
-    const login = new Login(t);
     const browser = new Browser(t);
-
-    await login.enterUser('test');
-    await login.enterPass('test');
-    await login.submit();
 
     const parcels = new Parcels(t);
     const parcelsForm = new ParcelsForm(t);
 
-    await t.expect(await parcels.getTableOpenCount()).eql(2)
-        .expect(await parcels.getTableArchiveCount()).eql(3);
+    const parcelsOpen = await parcels.getTableOpenCount();
+    const parcelsArchive = await parcels.getTableArchiveCount();
 
     await parcels.clickEdit('edit-3');
     await parcelsForm.save();
 
-    await t.expect(await parcels.getTableOpenCount()).eql(2)
-        .expect(await parcels.getTableArchiveCount()).eql(3);
+    await t.expect(await parcels.getTableOpenCount()).eql(parcelsOpen)
+        .expect(await parcels.getTableArchiveCount()).eql(parcelsArchive);
 });
 
-test.only('create new parcel with all fields', async t => {
-    const login = new Login(t);
-
-    await login.enterUser('test');
-
-    await login.enterPass('test');
-    await login.submit();
-
+test('create new parcel with all fields', async t => {
     const parcels = new Parcels(t);
     const parcelsForm = new ParcelsForm(t);
 

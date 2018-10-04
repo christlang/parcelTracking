@@ -19,6 +19,12 @@ class Parcel {
         return this.t.click(getById(parcel));
     }
 
+    async iconIsYes(cssClass, rowSelector) {
+        const icon = await rowSelector.find('.arrived').getAttribute('src');
+
+        return icon === '/yes.png';
+    }
+
     async clickNew() {
         return this.t.click(getById('new'));
     }
@@ -38,22 +44,22 @@ class Parcel {
         const receiver = await row.find('.receiver').innerText;
         const orderDate = await row.find('.orderDate').innerText;
         const destination = await row.find('.destination').innerText;
-        const itemInCentral = await row.find('.itemInCentral').getAttribute('src');
+        const itemInCentral = await this.iconIsYes('.itemInCentral', row);
         const sentFromCentralWith = await row.find('.sentFromCentralWith').innerText;
         const sentFromCentral = await row.find('.sentFromCentral').innerText;
         const comment = await row.find('.comment').innerText;
-        const arrived = await row.find('.arrived').getAttribute('src');
+        const arrived = await this.iconIsYes('.arrived', row);
 
         return {
             orderInfo,
             receiver,
             orderDate,
             destination,
-            itemInCentral: (itemInCentral === '/yes.png'),
+            itemInCentral,
             sentFromCentralWith,
             sentFromCentral,
             comment,
-            arrived: (arrived === '/yes.png')
+            arrived
         };
     }
 }
