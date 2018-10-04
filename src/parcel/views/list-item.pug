@@ -18,4 +18,4 @@ mixin listItem(parcel)
             a(href="/parcel/"+parcel.arrivedAtDestinationAction+"/"+parcel.id)
                 img(src=parcel.arrivedAtDestinationIcon)
         td
-            a(href="/parcel/form/" + parcel.id) edit
+            a(href="/parcel/form/" + parcel.id id="edit-" + parcel.id) edit
