@@ -1,8 +1,8 @@
 const {port} = require('../config');
 const Browser = require('../html/browser');
-const Login = require('../html/login');
+const Login = require('../html/LoginPageObject');
 const Parcels = require('../html/ParcelPageObject');
-const ParcelsForm = require('../html/parcelsForm');
+const ParcelsForm = require('../html/ParcelsFormPageObject');
 
 fixture `parcels`
     .page `http://localhost:${port}`
@@ -12,7 +12,7 @@ fixture `parcels`
 
         await login.enterUser('test');
         await login.enterPass('test');
-        await login.submit();
+        await login.clickSubmit();
 
     });
 
