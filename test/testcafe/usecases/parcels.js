@@ -1,7 +1,7 @@
 const {port} = require('../config');
 const Browser = require('../html/browser');
 const Login = require('../html/login');
-const Parcels = require('../html/parcels');
+const Parcels = require('../html/ParcelPageObject');
 const ParcelsForm = require('../html/parcelsForm');
 
 fixture `parcels`
@@ -20,7 +20,7 @@ test('logout', async t => {
     const browser = new Browser(t);
 
     const parcels = new Parcels(t);
-    await parcels.logout();
+    await parcels.clickLogout();
 
     const location = await browser.getLocation();
 
