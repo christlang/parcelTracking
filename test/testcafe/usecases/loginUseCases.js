@@ -1,9 +1,9 @@
-const {port} = require('../config');
+const {url} = require('../config');
 const Browser = require('../html/browser');
 const Login = require('../html/LoginPageObject');
 
 fixture `login`
-    .page `http://localhost:${port}`;
+    .page `${url}`;
 
 test('incorrect login', async t => {
     const login = new Login(t);

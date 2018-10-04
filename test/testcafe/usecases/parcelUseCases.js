@@ -1,11 +1,11 @@
-const {port} = require('../config');
+const {url} = require('../config');
 const Browser = require('../html/browser');
 const Login = require('../html/LoginPageObject');
 const Parcels = require('../html/ParcelPageObject');
 const ParcelsForm = require('../html/ParcelsFormPageObject');
 
 fixture `parcels`
-    .page `http://localhost:${port}`
+    .page `${url}`
     .beforeEach(async t => {
         const login = new Login(t);
         const browser = new Browser(t);
