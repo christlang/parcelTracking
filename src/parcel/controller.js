@@ -15,22 +15,26 @@ function convertTimestampToDate(timestamp) {
   return timestamp.substr(0, 10);
 }
 
+function convertToIcon(value) {
+  if (value) {
+    return '/yes.png';
+  }
+  return '/no.png';
+}
+
+function convertToAction(value) {
+  if (value) {
+    return 'unarchive';
+  }
+  return 'archive';
+}
+
 function prepareParcelForList(parcels) {
   return parcels.map((p) => {
     const parcel = p;
-    if (parcel.itemInCentral) {
-      parcel.itemInCentralIcon = '/yes.png';
-    } else {
-      parcel.itemInCentralIcon = '/no.png';
-    }
-
-    if (parcel.arrivedAtDestination) {
-      parcel.arrivedAtDestinationAction = 'unarchive';
-      parcel.arrivedAtDestinationIcon = '/yes.png';
-    } else {
-      parcel.arrivedAtDestinationAction = 'archive';
-      parcel.arrivedAtDestinationIcon = '/no.png';
-    }
+    parcel.itemInCentralIcon = convertToIcon(parcel.itemInCentral);
+    parcel.arrivedAtDestinationIcon = convertToIcon(parcel.arrivedAtDestination);
+    parcel.arrivedAtDestinationAction = convertToAction(parcel.arrivedAtDestination);
 
     parcel.orderDate = convertTimestampToDate(parcel.orderDate);
     parcel.sentFromCentral = convertTimestampToDate(parcel.sentFromCentral);
@@ -75,8 +79,8 @@ function unarchiveAction(request, response) {
   response.redirect(request.baseUrl);
 }
 
-async function formAction(request, response) {
-  let parcel = {
+function getEmptyParcel() {
+  return {
     orderInfo: '',
     destination: '',
     receiver: '',
@@ -87,10 +91,14 @@ async function formAction(request, response) {
     arrivedAtDestination: false,
     comment: '',
   };
+}
+
+async function formAction(request, response) {
+  let parcel = getEmptyParcel();
 
   if (request.params.id) {
-    const parcelId = parseInt(request.params.id, 10);
     try {
+      const parcelId = parseInt(request.params.id, 10);
       parcel = await model.get(parcelId);
       parcel.orderDate = convertTimestampToDate(parcel.orderDate);
       parcel.sentFromCentral = convertTimestampToDate(parcel.sentFromCentral);

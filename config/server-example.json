@@ -9,5 +9,9 @@
     "containerName": "parcelTracking",
     "tagName": "cutl/parcel-tracking",
     "exposedPort": 8080
+  },
+  "plato": {
+    "eslintErrorLimit": 0,
+    "maintainabilityLowerLimit": 60
   }
 }

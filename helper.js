@@ -7,6 +7,7 @@ const prompt = require('prompt');
 const sqlite = require('sqlite3');
 const sh = require('shelljs');
 const http = require('http');
+const plato = require('es6-plato');
 
 const { version } = require('./package');
 const config = require('./src/config').getConfig();
@@ -217,6 +218,57 @@ function waitForServer() {
   requestServerLoop();
 }
 
+function runPlato() {
+  // be sure and set your src, output, and any options.
+  const src = ['./src/**/*.js', './helper.js', './test/**/*.js'];
+  const outputDir = './plato-output';
+
+  const platoArgs = {
+    title: 'ParcelTracking',
+    eslint: '.eslintrc',
+  };
+
+  // you can use the reports in the callback.
+  function callback(reports) {
+    const overview = plato.getOverviewReport(reports);
+
+    const {
+      total,
+      average,
+    } = overview.summary;
+
+    const output = `total
+    ----------------------
+    eslint: ${total.eslint}
+    sloc: ${total.sloc}
+    maintainability: ${total.maintainability}
+    average
+    ----------------------
+    eslint: ${average.eslint}
+    sloc: ${average.sloc}
+    maintainability: ${average.maintainability}`;
+
+    console.log(output);
+
+    overview.reports.forEach((report) => {
+      const eslint = report.eslint.messages;
+      const { maintainability } = report.complexity;
+
+      console.log(`${report.info.file}: ${eslint}, ${maintainability}`);
+      if (eslint > config.plato.eslintErrorLimit) {
+        console.error(`eslint errors above ${config.plato.eslintErrorLimit} are not tolerated`);
+        process.exit(1);
+      }
+      if (maintainability < config.plato.maintainabilityLowerLimit) {
+        console.error(`maintainability below ${config.plato.maintainabilityLowerLimit} is not tolerated`);
+        process.exit(1);
+      }
+    });
+  }
+
+  plato.inspect(src, outputDir, platoArgs, callback);
+}
+
 nobot
   .version(version);
 
@@ -245,6 +297,12 @@ nobot
   .command('wait-for-server')
   .description('helps for ci-builds to wait until server is ready for ui-tests')
   .action(waitForServer);
+
+nobot
+  .command('plato')
+  .description('calculates maintainability and exit with 1 if it is to bad')
+  .action(runPlato);
+
 
 nobot.parse(process.argv);
 
