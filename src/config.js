@@ -3,33 +3,49 @@
 
 const fs = require('fs');
 
-function getConfig() {
-  const defaultConfig = './config/server.json';
-  const fallbackConfig = './config/server-example.json';
+function checkDatabaseAvailableOrExit(database) {
+  if (!fs.existsSync(database)) {
+    console.log(`database-file does not exists: ${database}`);
+    process.exit(2);
+  }
+}
 
-  let config;
+function getFilContenteAsJson(file) {
+  return JSON.parse(fs.readFileSync(file, 'UTF-8'));
+}
 
-  if (fs.existsSync(defaultConfig)) {
-    config = JSON.parse(fs.readFileSync(defaultConfig, 'UTF-8'));
-  } else if (fs.existsSync(fallbackConfig)) {
+function readConfigOrFallback(config, fallback) {
+  if (fs.existsSync(config)) {
+    return getFilContenteAsJson(config);
+  }
+
+  if (fs.existsSync(fallback)) {
     console.log('');
-    console.log(`You are using the fallback config: ${fallbackConfig}`);
-    console.log(`The usual config should be: ${defaultConfig}`);
+    console.log(`You are using the fallback config: ${fallback}`);
+    console.log(`The usual config should be: ${config}`);
     console.log('please provide a usual config (copy the example)');
     console.log('');
 
-    config = JSON.parse(fs.readFileSync(fallbackConfig));
-  } else {
+    return getFilContenteAsJson(fallback);
+  }
+
+  return null;
+}
+
+function getConfig() {
+  const configFile = './config/server.json';
+  const fallbackFile = './config/server-example.json';
+
+  const config = readConfigOrFallback(configFile, fallbackFile);
+
+  if (config === null) {
     console.log('');
     console.log('can not find a config, giving up start');
     console.log('');
     process.exit(1);
   }
 
-  if (!fs.existsSync(config.database)) {
-    console.log(`database-file does not exists: ${config.database}`);
-    process.exit(2);
-  }
+  checkDatabaseAvailableOrExit(config.database);
 
   return config;
 }
