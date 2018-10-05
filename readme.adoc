@@ -26,6 +26,14 @@ node helper.js user-add  # add user for login
 npm start                # start the app
 ----
 
+== Development ==
+
+* Linting: eslint
+** npm run lint
+
+* ui-test: testcafe
+** npm run test-cafe
+** or npm run test-cafe-headless
 
 == help ==
 

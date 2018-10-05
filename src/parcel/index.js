@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const {
-    listAction,
-    archiveAction,
-    unarchiveAction,
-    formAction,
-    saveAction
+  listAction,
+  archiveAction,
+  unarchiveAction,
+  formAction,
+  saveAction,
 } = require('./controller');
 
 

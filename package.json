@@ -4,6 +4,7 @@
   "description": "tracking parcels",
   "main": "src/index.js",
   "scripts": {
+    "lint": "npx eslint helper.js src test",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "test-cafe": "testcafe chrome test/testcafe/",
@@ -30,6 +31,10 @@
     "sqlite3": "^4.0.2"
   },
   "devDependencies": {
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-testcafe": "^0.2.1",
     "testcafe": "^0.22.0"
   },
   "engines": {
