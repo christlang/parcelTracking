@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "npx eslint helper.js src test",
-    "plato": "npx es6-plato -d plato-output -e .eslintrc -r src",
+    "plato": "node helper.js plato",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
     "test-cafe": "testcafe chrome test/testcafe/",
@@ -20,6 +20,7 @@
     "connect-ensure-login": "^0.1.1",
     "db-migrate": "^0.11.3",
     "db-migrate-sqlite3": "^0.3.1",
+    "es6-plato": "^1.0.18",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "morgan": "^1.9.1",
@@ -32,7 +33,6 @@
     "sqlite3": "^4.0.2"
   },
   "devDependencies": {
-    "es6-plato": "^1.0.18",
     "eslint": "^5.6.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
