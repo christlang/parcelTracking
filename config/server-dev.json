@@ -4,5 +4,9 @@
     "keyFile": "",
     "certFile": ""
   },
-  "port": 8080
+  "port": 8080,
+  "plato": {
+    "eslintErrorLimit": 0,
+    "maintainabilityLowerLimit": 60
+  }
 }
