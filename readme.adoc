@@ -2,7 +2,7 @@
 
 image:https://travis-ci.com/christlang/parcelTracking.svg?branch=master["Build Status", link="https://travis-ci.com/christlang/parcelTracking"]
 image:https://api.codeclimate.com/v1/badges/eccb399763bf2e4a0da8/maintainability["Maintainability", link="https://codeclimate.com/github/christlang/parcelTracking"]
-
+image:https://codebeat.co/badges/26fef559-0293-4c86-b69b-52f341a0b971["Maintainability", link="https://codebeat.co/projects/github-com-christlang-parceltracking-master"]
 
 Project to discover different ways for a node-server application.
 
