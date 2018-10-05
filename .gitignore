@@ -6,3 +6,4 @@ config/server.json
 cert
 lock.pid
 npm-debug.log
+plato-output
